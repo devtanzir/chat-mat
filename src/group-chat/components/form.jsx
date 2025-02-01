@@ -1,101 +1,15 @@
-import { useState } from "react";
-import Swal from "sweetalert2";
-import { cloudName, cloudPreset, lsKeyName } from "../../../config";
-import { cloudImageUpload, createId } from "../../utils";
-import LocalStorageUtil from "../../utils/local-storage";
 import PropTypes from "prop-types";
+import useForm from "../hooks/useForm";
 
 const Form = ({ handleToggle, token }) => {
-  const [username, setUsername] = useState("");
-  const [avatar, setAvatar] = useState({
-    preview: null,
-    file: null,
-  });
-  const [loader, setLoader] = useState(false);
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    // Ensure Cloudinary environment variables are set
-    if (!cloudName || !cloudPreset) {
-      Swal.fire({
-        icon: "error",
-        title: "Cloudinary Configuration Missing",
-        text: "Please check your environment variables.",
-      });
-      return;
-    }
-
-    // Validate required fields
-    if (!username) {
-      Swal.fire({
-        icon: "error",
-        title: "Validation Error",
-        text: "Author name is required.",
-      });
-      return;
-    }
-
-    let avatarUrl = null;
-
-    try {
-      setLoader(true);
-      // Upload avatar image if selected
-      if (avatar.file) {
-        const avatarData = await cloudImageUpload({
-          file: avatar.file,
-          cloudName: cloudName,
-          preset: cloudPreset,
-        });
-        avatarUrl = avatarData?.secure_url;
-      }
-
-      // Check if uploads were successful
-      if (!avatarUrl) {
-        Swal.fire({
-          icon: "error",
-          title: "Image Upload Error",
-          text: "Failed to upload images.",
-        });
-        return;
-      }
-
-      // Send Data to Local Storage
-
-      LocalStorageUtil.setItem(lsKeyName, {
-        authId: createId(),
-        username,
-        avatar: avatarUrl,
-      });
-
-      // get data token call
-      token();
-
-      // Reset form and close modal
-      setUsername("");
-      handleToggle(false);
-      Swal.fire({
-        title: "Done!",
-        icon: "success",
-      });
-    } catch (error) {
-      console.error("Error during submission:", error);
-      Swal.fire({
-        icon: "error",
-        title: "Submission Error",
-        text: "An error occurred while processing your request.",
-      });
-    } finally {
-      setLoader(false);
-    }
-  };
-
-  const handleImageChange = (event) => {
-    const file = event.target.files[0]; // Get the selected file
-    if (file) {
-      setAvatar({ preview: URL.createObjectURL(file), file }); // Set the image data URL to state
-    }
-  };
+  const {
+    avatar,
+    handleImageChange,
+    handleSubmit,
+    loader,
+    username,
+    handleInputChange,
+  } = useForm(handleToggle, token);
   return (
     <form onSubmit={handleSubmit} className="p-6 space-y-4">
       <div>
@@ -109,7 +23,7 @@ const Form = ({ handleToggle, token }) => {
           type="text"
           id="username"
           value={username}
-          onChange={(e) => setUsername(e.target.value)}
+          onChange={handleInputChange}
           className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-sky-300"
           required
         />
@@ -128,7 +42,7 @@ const Form = ({ handleToggle, token }) => {
               "https://www.freeiconspng.com/uploads/no-image-icon-13.png"
             }
             alt="Profile"
-            className={`w-16 h-16 rounded ${
+            className={`size-16 rounded ${
               avatar.preview ? "object-cover" : "object-contain"
             } `}
           />
