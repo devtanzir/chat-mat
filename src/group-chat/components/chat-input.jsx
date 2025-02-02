@@ -3,7 +3,7 @@ import { Paperclip } from "lucide-react";
 import { Send } from "lucide-react";
 import PropTypes from "prop-types";
 
-const ChatInput = ({ handleSubmit, newMessage, setNewMessage }) => {
+const ChatInput = ({ handleSubmit, newMessage, setNewMessage, loader }) => {
   return (
     <>
       <form
@@ -22,7 +22,7 @@ const ChatInput = ({ handleSubmit, newMessage, setNewMessage }) => {
 
         <input
           type="text"
-          value={newMessage.text}
+          value={loader ? "" : newMessage.text}
           onChange={(e) =>
             setNewMessage((prev) => ({
               ...prev,
@@ -34,8 +34,13 @@ const ChatInput = ({ handleSubmit, newMessage, setNewMessage }) => {
         />
         <button
           type="submit"
+          disabled={loader}
           onMouseDown={(e) => e.preventDefault()}
-          className="bg-sky-500 text-white p-2.5 rounded-full hover:bg-sky-600 transition"
+          className={`${
+            loader
+              ? "bg-neutral-200 text-neutral-700 cursor-not-allowed"
+              : "bg-sky-500 text-white cursor-pointer"
+          }   p-2.5 rounded-full hover:bg-sky-600 transition`}
         >
           <Send className="size-5 pointer-events-none" />
         </button>
@@ -48,6 +53,7 @@ ChatInput.propTypes = {
   handleSubmit: PropTypes.func,
   newMessage: PropTypes.object,
   setNewMessage: PropTypes.func,
+  loader: PropTypes.bool,
 };
 
 export default ChatInput;

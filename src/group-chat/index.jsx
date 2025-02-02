@@ -24,12 +24,14 @@ const GroupChat = () => {
   const [userData, setUserData] = useState(null);
   const { open: token, handleToggle: handleToken } = useToggler();
   const [currentId, setCurrentId] = useState("");
+  const [loader, setLoader] = useState(false);
 
   const getData = async () => {
     await findRealTime("chats", setChatData);
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (loader) return;
     if (newMessage.text.trim() === "") return;
     if (!userData) {
       Swal.fire({
@@ -58,6 +60,7 @@ const GroupChat = () => {
     }
 
     try {
+      setLoader(true);
       if (!newMessage.isEditing) {
         await createData("chats", {
           username: userData.username,
@@ -78,6 +81,7 @@ const GroupChat = () => {
       console.log(error.message);
     } finally {
       setNewMessage({ ...initialState });
+      setLoader(false);
     }
   };
 
@@ -115,6 +119,7 @@ const GroupChat = () => {
         handleSubmit={handleSubmit}
         newMessage={newMessage}
         setNewMessage={setNewMessage}
+        loader={loader}
       />
     </div>
   );

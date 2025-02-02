@@ -89,7 +89,7 @@ const ChatArea = ({
                         } `}
                       >
                         <p
-                          className={`break-words ${
+                          className={`break-words break-all whitespace-normal ${
                             authenticated && "text-gray-200"
                           }`}
                         >
