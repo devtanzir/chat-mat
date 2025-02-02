@@ -11,7 +11,11 @@ const ChatInput = ({ handleSubmit, newMessage, setNewMessage }) => {
         className="bg-transparent backdrop-blur-[1px] p-4 flex items-center space-x-2 sm:space-x-4 container mx-auto"
       >
         <Tooltip text="Coming Soon!" position="right">
-          <button type="button" className="p-2 rounded-full hover:bg-gray-100">
+          <button
+            onMouseDown={(e) => e.preventDefault()}
+            type="button"
+            className="p-2 rounded-full hover:bg-gray-100"
+          >
             <Paperclip className="w-5 h-5 text-gray-600" />
           </button>
         </Tooltip>
@@ -30,9 +34,10 @@ const ChatInput = ({ handleSubmit, newMessage, setNewMessage }) => {
         />
         <button
           type="submit"
-          className="bg-sky-500 text-white p-2.5 rounded-full hover:bg-sky-600 transition-colors"
+          onMouseDown={(e) => e.preventDefault()}
+          className="bg-sky-500 text-white p-2.5 rounded-full hover:bg-sky-600 transition"
         >
-          <Send className="w-5 h-5" />
+          <Send className="size-5 pointer-events-none" />
         </button>
       </form>
     </>

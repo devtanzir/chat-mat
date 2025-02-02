@@ -24,7 +24,8 @@ const ChatArea = ({
   } = useChatArea(chatData, setCurrentId, currentId, setNewMessage);
   return (
     <>
-      <div className="flex-1 overflow-y-auto chat-scroll p-4 space-y-4 container mx-auto">
+      <div className="flex-1" />
+      <div className="overflow-y-auto chat-scroll p-4 space-y-4 container mx-auto">
         {chatData?.map((item, index) => {
           const time = formatTimestamp(item?.createdAt);
           const date = formatTimestampToDate(item?.createdAt);
@@ -53,7 +54,7 @@ const ChatArea = ({
               )}
               <div
                 className={`flex ${
-                  authenticated ? "justify-end pr-10" : "justify-start"
+                  authenticated ? "justify-end" : "justify-start"
                 }`}
               >
                 {authenticated && (
@@ -104,7 +105,7 @@ const ChatArea = ({
         })}
         <div ref={messagesEndRef} />
         <Modal open={open} handleToggle={handleToggle} options>
-          <div className="flex flex-col min-w-80">
+          <div className="flex flex-col min-w-56">
             <button
               onClick={handleEditChat}
               className="rounded w-full py-3.5 text-black font-medium hover:bg-gray-200"
