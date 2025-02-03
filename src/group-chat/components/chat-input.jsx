@@ -11,6 +11,7 @@ const ChatInput = ({
   selectedImages,
   removeImage,
   handleImageChange,
+  chatData,
 }) => {
   return (
     <div className="relative container mx-auto">
@@ -34,9 +35,27 @@ const ChatInput = ({
           ))}
         </div>
       )}
+      {newMessage.isEditing &&
+        chatData.images.length > 0 &&
+        selectedImages.length === 0 && (
+          <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-2 px-4 absolute top-0 left-0 w-full -translate-y-[65px]">
+            {chatData.images.map((image, index) => (
+              <div
+                key={index}
+                className="w-16 h-16 flex-shrink-0 cursor-pointer"
+              >
+                <img
+                  src={image}
+                  alt="preview"
+                  className="w-full h-full object-cover rounded-lg shadow"
+                />
+              </div>
+            ))}
+          </div>
+        )}
 
       <form
-        onSubmit={(e) => handleSubmit(e, selectedImages)}
+        onSubmit={handleSubmit}
         className="bg-transparent backdrop-blur-[1px] p-4 flex items-center space-x-2 sm:space-x-4 container mx-auto"
       >
         <Tooltip text="Upload Images" position="right">
@@ -63,7 +82,9 @@ const ChatInput = ({
             }))
           }
           placeholder="Type a message..."
-          className="flex-1 py-2.5 px-4 border-none bg-neutral-200 rounded-full focus:outline-none text-sm sm:text-base"
+          className={`flex-1 py-2.5 px-4 border-none ${
+            newMessage.isEditing ? "bg-green-100" : "bg-neutral-200"
+          }  rounded-full focus:outline-none text-sm sm:text-base`}
         />
 
         <button
@@ -95,6 +116,7 @@ ChatInput.propTypes = {
   selectedImages: PropTypes.array,
   removeImage: PropTypes.func,
   handleImageChange: PropTypes.func,
+  chatData: PropTypes.object,
 };
 
 export default ChatInput;
