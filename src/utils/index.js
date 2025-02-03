@@ -3,15 +3,21 @@ import { Month } from "./constants/month";
 
 export const deepCopy = (obj) => JSON.parse(JSON.stringify(obj));
 
-export const cloudImageUpload = async ({ file, cloudName, preset }) => {
-  const form__data = new FormData();
-  form__data.append("file", file);
-  form__data.append("upload_preset", preset);
-  const response = await axios.post(
-    `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
-    form__data
-  );
-  return response.data;
+export const cloudImageUpload = async ({ files, cloudName, preset }) => {
+  const filesArray = Array.isArray(files) ? files : [files]; // Ensure it's always an array
+  const uploadPromises = filesArray.map(async (file) => {
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", preset);
+
+    const response = await axios.post(
+      `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
+      formData
+    );
+    return response.data; // Returns the uploaded image data
+  });
+
+  return Promise.all(uploadPromises); // Waits for all images to upload
 };
 export const formatTimestamp = (timestamp) => {
   const date = new Date(timestamp?.seconds * 1000);
@@ -24,7 +30,7 @@ export const formatTimestamp = (timestamp) => {
     "0"
   )} ${ampm}`;
 };
-export function formatTimestampToDate(timestamp, format = "DD-MM-YYYY") {
+export const formatTimestampToDate = (timestamp, format = "DD-MM-YYYY") => {
   // Convert seconds to a Date object
   const date = new Date(timestamp?.seconds * 1000);
 
@@ -55,7 +61,7 @@ export function formatTimestampToDate(timestamp, format = "DD-MM-YYYY") {
     default:
       throw new Error("Invalid date format");
   }
-}
+};
 export const createId = () => {
   const timestamp = ((new Date().getTime() / 1000) | 0).toString(16);
   const machineId = "xxxxxxxxxxxx".replace(/[x]/g, function () {
