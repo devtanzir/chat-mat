@@ -52,11 +52,11 @@ const useForm = (handleToggle, token) => {
       // Upload avatar image if a file is selected
       if (avatar.file) {
         const avatarData = await cloudImageUpload({
-          file: avatar.file,
+          files: avatar.file,
           cloudName,
           preset: cloudPreset,
         });
-        avatarUrl = avatarData?.secure_url;
+        avatarUrl = avatarData[0]?.secure_url;
       }
 
       // Handle upload failure
@@ -97,6 +97,7 @@ const useForm = (handleToggle, token) => {
       });
     } finally {
       setLoader(false);
+      setAvatar({ preview: null, file: null });
     }
   };
 

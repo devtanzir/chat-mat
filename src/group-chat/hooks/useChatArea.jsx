@@ -2,6 +2,7 @@ import { useRef, useEffect } from "react";
 import useToggler from "../../hooks/useToggler";
 import Swal from "sweetalert2";
 import { deleteData } from "../../firebase/models";
+import { collectionName } from "../../../config";
 
 /**
  * Custom hook to handle chat area actions, including scroll-to-bottom behavior,
@@ -61,7 +62,7 @@ const useChatArea = (chatData, setCurrentId, currentId, setNewMessage) => {
       if (result.isConfirmed) {
         // Delete the chat message from Firebase if the user confirms
         Swal.fire("Deleted!", "Your chat has been deleted.", "success");
-        deleteData("chats", currentId); // Call the function to delete data from Firebase
+        deleteData(collectionName, currentId); // Call the function to delete data from Firebase
         handleToggle(); // Close the modal after deletion
       }
     });

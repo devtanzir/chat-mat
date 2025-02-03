@@ -6,6 +6,7 @@ import Modal from "./modal";
 import PropTypes from "prop-types";
 
 import useChatArea from "../hooks/useChatArea";
+import CardSlider from "../../components/shared/card-slider";
 
 const ChatArea = ({
   chatData,
@@ -25,11 +26,12 @@ const ChatArea = ({
   return (
     <>
       <div className="flex-1" />
-      <div className="overflow-y-auto chat-scroll p-4 space-y-4 container mx-auto">
+      <div className="overflow-y-auto overflow-x-hidden chat-scroll p-4 space-y-4 container mx-auto">
         {chatData?.map((item, index) => {
           const time = formatTimestamp(item?.createdAt);
           const date = formatTimestampToDate(item?.createdAt);
           const authenticated = item.authId === userData?.authId;
+          const photoExist = item?.images && item.images.length > 0;
 
           // Get the previous message's timestamp
           const prevMessage = chatData[index - 1];
@@ -66,36 +68,54 @@ const ChatArea = ({
                   </button>
                 )}
                 <div
-                  className={`flex items-center ${
+                  className={`flex items-end ${
                     authenticated && "flex-row-reverse"
-                  } gap-3 max-w-[80%] sm:max-w-[70%]`}
+                  } gap-3 ${
+                    photoExist
+                      ? "max-w-[258px] sm:max-w-[310px] lg:max-w-[360px] xl:max-w-[410px]"
+                      : "max-w-[80%] sm:max-w-[70%]"
+                  } `}
                 >
                   <img
-                    className="size-7 rounded-full object-cover translate-y-3"
+                    className="size-7 rounded-full object-cover -translate-y-3"
                     src={item.avatar}
                     alt={item.username}
                   />
                   <div className="flex flex-col gap-2">
-                    <p className="font-normal text-xs pl-2">{item.username}</p>
+                    <p
+                      className={`font-normal text-xs pl-2 ${
+                        authenticated && "text-right"
+                      }`}
+                    >
+                      {item.username}
+                    </p>
                     <Tooltip
                       text={time}
                       position={authenticated ? "top" : "right"}
                     >
-                      <div
-                        className={`p-3 rounded-[18px] ${
-                          authenticated
-                            ? "bg-blue-500 text-white"
-                            : "bg-neutral-200 text-neutral-700"
-                        } `}
-                      >
-                        <p
-                          className={`break-words break-all whitespace-normal ${
-                            authenticated && "text-gray-200"
-                          }`}
+                      {photoExist && (
+                        <CardSlider
+                          images={item.images}
+                          authenticated={authenticated}
+                        />
+                      )}
+                      {item.text && (
+                        <div
+                          className={`p-3 rounded-[18px] w-fit ${
+                            authenticated
+                              ? "bg-blue-500 text-white ml-auto"
+                              : "bg-neutral-200 text-neutral-700 mr-auto"
+                          } `}
                         >
-                          {item.text}
-                        </p>
-                      </div>
+                          <p
+                            className={`break-words break-all whitespace-normal ${
+                              authenticated && "text-gray-200"
+                            }`}
+                          >
+                            {item.text}
+                          </p>
+                        </div>
+                      )}
                     </Tooltip>
                   </div>
                 </div>

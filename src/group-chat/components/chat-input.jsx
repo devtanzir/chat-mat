@@ -1,28 +1,61 @@
 import Tooltip from "../../components/shared/tooltip";
-import { Paperclip } from "lucide-react";
-import { Send } from "lucide-react";
+import { Loader } from "lucide-react";
+import { Paperclip, Send, X } from "lucide-react";
 import PropTypes from "prop-types";
 
-const ChatInput = ({ handleSubmit, newMessage, setNewMessage, loader }) => {
+const ChatInput = ({
+  handleSubmit,
+  newMessage,
+  setNewMessage,
+  loader,
+  selectedImages,
+  removeImage,
+  handleImageChange,
+}) => {
   return (
-    <>
+    <div className="relative container mx-auto">
+      {/* Preview selected images above the input field with horizontal scrolling */}
+      {selectedImages.length > 0 && (
+        <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-2 px-4 absolute top-0 left-0 w-full -translate-y-[65px]">
+          {selectedImages.map((image, index) => (
+            <div key={index} className="relative w-16 h-16 flex-shrink-0">
+              <img
+                src={URL.createObjectURL(image)}
+                alt="preview"
+                className="w-full h-full object-cover rounded-lg shadow"
+              />
+              <button
+                className="absolute top-0 right-0 bg-black bg-opacity-50 rounded-full p-1"
+                onClick={() => removeImage(index)}
+              >
+                <X className="w-4 h-4 text-white" />
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
+
       <form
-        onSubmit={handleSubmit}
+        onSubmit={(e) => handleSubmit(e, selectedImages)}
         className="bg-transparent backdrop-blur-[1px] p-4 flex items-center space-x-2 sm:space-x-4 container mx-auto"
       >
-        <Tooltip text="Coming Soon!" position="right">
-          <button
-            onMouseDown={(e) => e.preventDefault()}
-            type="button"
-            className="p-2 rounded-full hover:bg-gray-100"
-          >
+        <Tooltip text="Upload Images" position="right">
+          <label className="p-2 rounded-full hover:bg-gray-100 cursor-pointer">
             <Paperclip className="w-5 h-5 text-gray-600" />
-          </button>
+            <input
+              type="file"
+              accept="image/*"
+              multiple
+              onChange={handleImageChange}
+              className="hidden"
+            />
+          </label>
         </Tooltip>
 
         <input
           type="text"
-          value={loader ? "" : newMessage.text}
+          readOnly={loader}
+          value={newMessage.text}
           onChange={(e) =>
             setNewMessage((prev) => ({
               ...prev,
@@ -32,6 +65,7 @@ const ChatInput = ({ handleSubmit, newMessage, setNewMessage, loader }) => {
           placeholder="Type a message..."
           className="flex-1 py-2.5 px-4 border-none bg-neutral-200 rounded-full focus:outline-none text-sm sm:text-base"
         />
+
         <button
           type="submit"
           disabled={loader}
@@ -39,13 +73,17 @@ const ChatInput = ({ handleSubmit, newMessage, setNewMessage, loader }) => {
           className={`${
             loader
               ? "bg-neutral-200 text-neutral-700 cursor-not-allowed"
-              : "bg-sky-500 text-white cursor-pointer"
-          }   p-2.5 rounded-full hover:bg-sky-600 transition`}
+              : "bg-sky-500 text-white cursor-pointer hover:bg-sky-600"
+          } p-2.5 rounded-full transition`}
         >
-          <Send className="size-5 pointer-events-none" />
+          {loader ? (
+            <Loader className="size-5 animate-spin" />
+          ) : (
+            <Send className="size-5 pointer-events-none" />
+          )}
         </button>
       </form>
-    </>
+    </div>
   );
 };
 
@@ -54,6 +92,9 @@ ChatInput.propTypes = {
   newMessage: PropTypes.object,
   setNewMessage: PropTypes.func,
   loader: PropTypes.bool,
+  selectedImages: PropTypes.array,
+  removeImage: PropTypes.func,
+  handleImageChange: PropTypes.func,
 };
 
 export default ChatInput;
