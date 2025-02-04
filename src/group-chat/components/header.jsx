@@ -35,6 +35,7 @@ const Header = ({ userData, handleToken, setModalOpen }) => {
                 : "https://uxwing.com/wp-content/themes/uxwing/download/peoples-avatars/no-profile-picture-icon.png"
             }
             className="size-10 object-cover rounded"
+            loading="lazy"
             alt="user-photo"
           />
           <h1 className="text-xl font-semibold">

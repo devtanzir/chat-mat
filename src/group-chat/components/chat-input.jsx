@@ -1,7 +1,12 @@
 import Tooltip from "../../components/shared/tooltip";
+import { Smile } from "lucide-react";
 import { Loader } from "lucide-react";
 import { Paperclip, Send, X } from "lucide-react";
 import PropTypes from "prop-types";
+import EmojiPicker from "emoji-picker-react";
+import useToggler from "../../hooks/useToggler";
+import { useRef } from "react";
+import { useEffect } from "react";
 
 const ChatInput = ({
   handleSubmit,
@@ -13,16 +18,46 @@ const ChatInput = ({
   handleImageChange,
   chatData,
 }) => {
+  const { handleToggle, open } = useToggler();
+  const emojiPickerRef = useRef(null);
+
+  const handleEmojiClick = (emojiData) => {
+    setNewMessage((prev) => ({
+      ...prev,
+      text: prev.text + emojiData.emoji, // Append emoji to input
+    }));
+  };
+
+  // Close emoji picker when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        emojiPickerRef.current &&
+        !emojiPickerRef.current.contains(event.target)
+      ) {
+        handleToggle();
+      }
+    };
+
+    if (open) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [open, handleToggle]);
+
   return (
     <div className="relative container mx-auto">
       {/* Preview selected images above the input field with horizontal scrolling */}
       {selectedImages.length > 0 && (
-        <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-2 px-4 absolute top-0 left-0 w-full -translate-y-[65px]">
+        <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-2 px-4 absolute top-0 left-0 w-full -translate-y-[65px] z-0">
           {selectedImages.map((image, index) => (
             <div key={index} className="relative w-16 h-16 flex-shrink-0">
               <img
                 src={URL.createObjectURL(image)}
                 alt="preview"
+                loading="lazy"
                 className="w-full h-full object-cover rounded-lg shadow"
               />
               <button
@@ -38,7 +73,7 @@ const ChatInput = ({
       {newMessage.isEditing &&
         chatData.images.length > 0 &&
         selectedImages.length === 0 && (
-          <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-2 px-4 absolute top-0 left-0 w-full -translate-y-[65px]">
+          <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-2 px-4 absolute top-0 left-0 w-full -translate-y-[65px] z-0">
             {chatData.images.map((image, index) => (
               <div
                 key={index}
@@ -47,6 +82,7 @@ const ChatInput = ({
                 <img
                   src={image}
                   alt="preview"
+                  loading="lazy"
                   className="w-full h-full object-cover rounded-lg shadow"
                 />
               </div>
@@ -58,7 +94,7 @@ const ChatInput = ({
         onSubmit={handleSubmit}
         className="bg-transparent backdrop-blur-[1px] p-4 flex items-center space-x-2 sm:space-x-4 container mx-auto"
       >
-        <Tooltip text="Upload Images" position="right">
+        <Tooltip text="Upload Images" position="top">
           <label className="p-2 rounded-full hover:bg-gray-100 cursor-pointer">
             <Paperclip className="w-5 h-5 text-gray-600" />
             <input
@@ -69,6 +105,28 @@ const ChatInput = ({
               className="hidden"
             />
           </label>
+        </Tooltip>
+        <Tooltip text="Emoji" position="top">
+          <div className="relative">
+            <button
+              onClick={handleToggle}
+              type="button"
+              className="transition duration-300 active:scale-90"
+            >
+              <Smile className="w-5 h-5 text-gray-600" />
+            </button>
+            {open && (
+              <div
+                ref={emojiPickerRef}
+                className="absolute bottom-12 sm:bottom-10 left-2 sm:right-0 !z-50"
+              >
+                <EmojiPicker
+                  onEmojiClick={handleEmojiClick}
+                  className="!w-64 !h-96 sm:!w-[350px] sm:!h-[450px]"
+                />
+              </div>
+            )}
+          </div>
         </Tooltip>
 
         <input

@@ -15,13 +15,14 @@ const CardSlider = ({ images, authenticated }) => {
         grabCursor={true}
         modules={[EffectCards]}
         className={`mySwiper !px-6 !pb-2.5 !pt-0 w-[198px] h-[200px] sm:w-[250px] sm:h-[253px] lg:w-[300px] lg:h-[310px] xl:w-[350px] xl:h-[360px] ${
-          authenticated ? "!ml-auto !mr-0" : "!mr-auto !ml-0"
+          authenticated ? "!ml-auto !mr-0" : "!mr-auto !ml-0 !z-0"
         }`}
       >
         {images.map((image) => (
           <SwiperSlide key={image} className="rounded-[18px] bg-neutral-200">
             <img
               src={image || PlaceHolder}
+              loading="lazy"
               className="h-full w-full object-cover"
               alt="Photo Preview"
             />
