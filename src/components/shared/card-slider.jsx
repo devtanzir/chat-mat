@@ -22,6 +22,7 @@ const CardSlider = ({ images, authenticated }) => {
           <SwiperSlide key={image} className="rounded-[18px] bg-neutral-200">
             <img
               src={image || PlaceHolder}
+              loading="lazy"
               className="h-full w-full object-cover"
               alt="Photo Preview"
             />

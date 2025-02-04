@@ -17,12 +17,13 @@ const ChatInput = ({
     <div className="relative container mx-auto">
       {/* Preview selected images above the input field with horizontal scrolling */}
       {selectedImages.length > 0 && (
-        <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-2 px-4 absolute top-0 left-0 w-full -translate-y-[65px]">
+        <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-2 px-4 absolute top-0 left-0 w-full -translate-y-[65px] z-10">
           {selectedImages.map((image, index) => (
             <div key={index} className="relative w-16 h-16 flex-shrink-0">
               <img
                 src={URL.createObjectURL(image)}
                 alt="preview"
+                loading="lazy"
                 className="w-full h-full object-cover rounded-lg shadow"
               />
               <button
@@ -38,7 +39,7 @@ const ChatInput = ({
       {newMessage.isEditing &&
         chatData.images.length > 0 &&
         selectedImages.length === 0 && (
-          <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-2 px-4 absolute top-0 left-0 w-full -translate-y-[65px]">
+          <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-2 px-4 absolute top-0 left-0 w-full -translate-y-[65px] z-10">
             {chatData.images.map((image, index) => (
               <div
                 key={index}
@@ -47,6 +48,7 @@ const ChatInput = ({
                 <img
                   src={image}
                   alt="preview"
+                  loading="lazy"
                   className="w-full h-full object-cover rounded-lg shadow"
                 />
               </div>

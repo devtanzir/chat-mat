@@ -78,6 +78,7 @@ const ChatArea = ({
                 >
                   <img
                     className="size-7 rounded-full object-cover -translate-y-3"
+                    loading="lazy"
                     src={item.avatar}
                     alt={item.username}
                   />
