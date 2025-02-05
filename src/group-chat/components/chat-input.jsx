@@ -4,9 +4,7 @@ import { Loader } from "lucide-react";
 import { Paperclip, Send, X } from "lucide-react";
 import PropTypes from "prop-types";
 import EmojiPicker from "emoji-picker-react";
-import useToggler from "../../hooks/useToggler";
-import { useRef } from "react";
-import { useEffect } from "react";
+import useChatInput from "../hooks/useChatInput";
 
 const ChatInput = ({
   handleSubmit,
@@ -18,34 +16,8 @@ const ChatInput = ({
   handleImageChange,
   chatData,
 }) => {
-  const { handleToggle, open } = useToggler();
-  const emojiPickerRef = useRef(null);
-
-  const handleEmojiClick = (emojiData) => {
-    setNewMessage((prev) => ({
-      ...prev,
-      text: prev.text + emojiData.emoji, // Append emoji to input
-    }));
-  };
-
-  // Close emoji picker when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (
-        emojiPickerRef.current &&
-        !emojiPickerRef.current.contains(event.target)
-      ) {
-        handleToggle();
-      }
-    };
-
-    if (open) {
-      document.addEventListener("mousedown", handleClickOutside);
-    }
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [open, handleToggle]);
+  const { open, handleToggle, handleEmojiClick, emojiPickerRef } =
+    useChatInput(setNewMessage);
 
   return (
     <div className="relative container mx-auto">

@@ -1,8 +1,9 @@
 import { useRef, useEffect } from "react";
 import useToggler from "../../hooks/useToggler";
 import Swal from "sweetalert2";
-import { deleteData } from "../../firebase/models";
+import { deleteData, updateData } from "../../firebase/models";
 import { collectionName } from "../../../config";
+import { useState } from "react";
 
 /**
  * Custom hook to handle chat area actions, including scroll-to-bottom behavior,
@@ -17,6 +18,9 @@ import { collectionName } from "../../../config";
 const useChatArea = (chatData, setCurrentId, currentId, setNewMessage) => {
   // Hook to manage modal toggle state
   const { open, handleToggle } = useToggler();
+
+  // State for selected reactions
+  const [showPicker, setShowPicker] = useState(null);
 
   // Reference to the element where chat messages end for smooth scrolling
   const messagesEndRef = useRef(null);
@@ -81,15 +85,61 @@ const useChatArea = (chatData, setCurrentId, currentId, setNewMessage) => {
     });
   };
 
+  /**
+   * Handles showing the reaction picker for a specific message.
+   *
+   * @param {string} id - The ID of the chat message to show the reaction picker for.
+   */
+  const handleShowReaction = (id) => {
+    setShowPicker(id); // Open picker for selected message
+  };
+
+  /**
+   * Handles the selection of a reaction for a specific message.
+   * Updates the reactions in Firestore or the database.
+   *
+   * @param {string} reaction - The selected reaction (e.g., "👍", "❤️").
+   * @param {string} authId - The ID of the user who reacted.
+   * @param {string} id - The ID of the chat message to update.
+   * @param {Array} reactions - The current list of reactions for the message.
+   */
+  const handleReactionSelect = (reaction, authId, id, reactions = []) => {
+    // Check if the user has already reacted
+    const existingReactionIndex = reactions.findIndex(
+      (r) => r.senderId === authId
+    );
+
+    let updatedReactions;
+
+    if (existingReactionIndex !== -1) {
+      // If the user already reacted, update the existing reaction
+      updatedReactions = reactions.map((r, index) =>
+        index === existingReactionIndex ? { ...r, reaction } : r
+      );
+    } else {
+      // If the user hasn't reacted, add a new one
+      updatedReactions = [...reactions, { senderId: authId, reaction }];
+    }
+
+    // Update Firestore or Database
+    updateData(collectionName, id, { reactions: updatedReactions });
+
+    // Close the picker
+    setShowPicker(null);
+  };
+
   // Return all necessary values and functions for use in the component
   return {
-    open,
-    messagesEndRef,
-    handleToggle,
-    scrollToBottom,
     handleAction,
     handleDeleteChat,
     handleEditChat,
+    handleToggle,
+    open,
+    messagesEndRef,
+    showPicker,
+    setShowPicker,
+    handleReactionSelect,
+    handleShowReaction,
   };
 };
 

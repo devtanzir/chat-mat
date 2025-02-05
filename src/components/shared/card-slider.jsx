@@ -12,6 +12,7 @@ const CardSlider = ({ images, authenticated }) => {
     <>
       <Swiper
         effect={"cards"}
+        Swiper
         grabCursor={true}
         modules={[EffectCards]}
         className={`mySwiper !px-6 !pb-2.5 !pt-0 w-[198px] h-[200px] sm:w-[250px] sm:h-[253px] lg:w-[300px] lg:h-[310px] xl:w-[350px] xl:h-[360px] ${

@@ -1,5 +1,6 @@
 import PropTypes from "prop-types";
 import useForm from "../hooks/useForm";
+import Button from "../../components/ui/button";
 
 const Form = ({ handleToggle, token }) => {
   const {
@@ -59,19 +60,12 @@ const Form = ({ handleToggle, token }) => {
         </div>
       </div>
       <div className="flex justify-between space-x-2 mt-6">
-        <button
-          type="button"
-          onClick={() => handleToggle(false)}
-          className="px-4 py-2 rounded font-semibold text-red-600 bg-red-100 hover:bg-red-200 transition-colors"
-        >
+        <Button variant="red-thin" onClick={() => handleToggle(false)}>
           Cancel
-        </button>
-        <button
-          type="submit"
-          className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors"
-        >
+        </Button>
+        <Button type="submit" variant="primary">
           {loader ? "processing..." : "Submit"}
-        </button>
+        </Button>
       </div>
     </form>
   );

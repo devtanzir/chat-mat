@@ -5,6 +5,7 @@ import LocalStorageUtil from "../../utils/local-storage";
 import { lsKeyName } from "../../../config";
 import PropTypes from "prop-types";
 import { LogIn } from "lucide-react";
+import Button from "../../components/ui/button";
 
 const Header = ({ userData, handleToken, setModalOpen }) => {
   const clearLs = () => {
@@ -45,23 +46,17 @@ const Header = ({ userData, handleToken, setModalOpen }) => {
         {userData ? (
           <div className="flex space-x-4">
             <Tooltip text="Log Out" position="left">
-              <button
-                onClick={clearLs}
-                className="p-2 rounded-full hover:bg-gray-100"
-              >
+              <Button variant="icon" onClick={clearLs}>
                 <LogOut className="w-5 h-5 text-gray-600" />
-              </button>
+              </Button>
             </Tooltip>
           </div>
         ) : (
           <div className="flex space-x-4">
             <Tooltip text="Log In" position="left">
-              <button
-                onClick={() => setModalOpen(true)}
-                className="p-2 rounded-full hover:bg-gray-100"
-              >
+              <Button variant="icon" onClick={() => setModalOpen(true)}>
                 <LogIn className="w-5 h-5 text-gray-600" />
-              </button>
+              </Button>
             </Tooltip>
           </div>
         )}
