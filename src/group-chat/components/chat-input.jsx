@@ -122,6 +122,8 @@ const ChatInput = ({
               >
                 <EmojiPicker
                   onEmojiClick={handleEmojiClick}
+                  autoFocusSearch={false}
+                  emojiStyle="native"
                   className="!w-64 !h-96 sm:!w-[350px] sm:!h-[450px]"
                 />
               </div>
